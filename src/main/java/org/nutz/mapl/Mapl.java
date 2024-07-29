@@ -1,9 +1,11 @@
 package org.nutz.mapl;
 
+import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.List;
-import org.nutz.json.impl.ObjConvertImpl;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import me.asu.util.JsonUtils;
 import org.nutz.mapl.impl.MaplMerge;
 import org.nutz.mapl.impl.MaplRebuild;
 import org.nutz.mapl.impl.compile.ObjCompileImpl;
@@ -29,16 +31,13 @@ public class Mapl {
      * <li>只要不是List, Map 存储的, 都认为是可以直接写入对象的. TODO 这点可以调整一下.
      * </ul>
      */
-    public static Object maplistToObj(Object maplist, Type type) {
-        return new ObjConvertImpl(type).convert(maplist);
+    @SuppressWarnings("unchecked")
+    public static <T> T mapListToObject(Object maplist, Class<T> clz) {
+        return (T) JsonUtils.toObject(maplist, clz);
     }
 
-    /**
-     * 与maplistToObj实现一样, 少了一步强制转换而已
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T maplistToT(Object maplist, Class<T> clz) {
-        return (T) new ObjConvertImpl(clz).convert(maplist);
+    public static <T> T mapListToObject(Object maplist, TypeReference<T> clz) {
+        return (T) JsonUtils.toObject(maplist, clz);
     }
 
     // ------------------------------------------------------------------
@@ -103,7 +102,7 @@ public class Mapl {
      * @param maplist maplist结构的对象
      * @param model 转换模板, 一个JSON格式的reader
      */
-    public static Object convert(Object maplist, Reader model) {
+    public static Object convert(Object maplist, Reader model) throws IOException {
         StructureConvert convert = new StructureConvert(model);
         return convert.convert(maplist);
     }

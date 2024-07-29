@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.nutz.json.Json;
-import org.nutz.json.entity.JsonEntity;
-import org.nutz.json.entity.JsonEntityField;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import me.asu.util.JsonUtils;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.util.Mirror;
 import org.nutz.mapl.MaplCompile;
@@ -105,27 +105,8 @@ public class ObjCompileImpl implements MaplCompile<Object> {
         if (null == obj) {
             return null;
         }
-        Class<? extends Object> type = obj.getClass();
-        JsonEntity jen = Json.getEntity(Mirror.me(type));
-        List<JsonEntityField> fields = jen.getFields();
-        ArrayList<Pair> list = new ArrayList<Pair>(fields.size());
-        for (JsonEntityField jef : fields) {
-            String name = jef.getName();
-            try {
-                Object value = jef.getValue(obj);
-                if (null != value) {
-                    // 递归
-                    Mirror<?> mirror = Mirror.me(value);
-                    if (mirror.isPojo()) {
-                        value = parse(value);
-                    }
-                }
-                // 加入输出列表 ...
-                list.add(new Pair(name, value));
-            } catch (FailToGetValueException e) {
-            }
-        }
-        return writeItem(list, map);
+        return JsonUtils.toObject(obj, Map.class);
+
     }
 
     private Map<String, Object> writeItem(List<Pair> list, Map<String, Object> map) {

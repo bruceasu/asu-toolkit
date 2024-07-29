@@ -2,7 +2,8 @@ package org.nutz.mapl.impl.convert;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.nutz.json.Json;
+
+import me.asu.util.JsonUtils;
 import org.nutz.lang.util.Streams;
 import org.nutz.mapl.impl.MaplEach;
 import org.nutz.mapl.MaplConvert;
@@ -28,7 +29,7 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert {
 
     @SuppressWarnings("unchecked")
     public FilterConvertImpl(String path) {
-        items = (List<String>) Json.fromJson(Streams.fileInr(path));
+        items = (List<String>) JsonUtils.toList(Streams.readAndClose(Streams.fileInr(path)), String.class);
     }
 
     public FilterConvertImpl(List<String> paths) {

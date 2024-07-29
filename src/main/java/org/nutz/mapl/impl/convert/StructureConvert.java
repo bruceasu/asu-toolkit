@@ -1,10 +1,12 @@
 package org.nutz.mapl.impl.convert;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.nutz.json.Json;
+
+import me.asu.util.JsonUtils;
 import org.nutz.lang.util.Lang;
 import org.nutz.lang.util.Streams;
 import org.nutz.mapl.MaplConvert;
@@ -70,16 +72,16 @@ public class StructureConvert extends MaplEach implements MaplConvert {
     /**
      * @param path 模板文件路径
      */
-    public StructureConvert(String path) {
-        Object obj = Json.fromJson(Streams.fileInr(path));
+    public StructureConvert(String path) throws IOException {
+        Object obj = JsonUtils.toJson(Streams.readAndClose(Streams.fileInr(path)));
         loadRelation(obj, "");
     }
 
     /**
      * @param reader 模板流
      */
-    public StructureConvert(Reader reader) {
-        Object obj = Json.fromJson(reader);
+    public StructureConvert(Reader reader) throws IOException {
+        Object obj = JsonUtils.toJson(Streams.readAndClose(reader));
         loadRelation(obj, "");
     }
 
