@@ -1,4 +1,4 @@
-package me.asu.net.util;
+package me.asu.net.socket.uitl;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

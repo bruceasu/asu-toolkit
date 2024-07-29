@@ -1,4 +1,4 @@
-package me.asu.net;
+package me.asu.net.socket;
 
 
 public class NetConstants {

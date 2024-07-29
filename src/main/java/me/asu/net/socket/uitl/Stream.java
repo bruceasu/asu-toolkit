@@ -1,4 +1,4 @@
-package me.asu.net.util;
+package me.asu.net.socket.uitl;
 
 import java.io.*;
 import java.util.concurrent.TimeoutException;

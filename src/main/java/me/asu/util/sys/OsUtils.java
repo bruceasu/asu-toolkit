@@ -1,42 +1,42 @@
 package me.asu.util.sys;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.security.*;
+import java.security.SecureRandom;
 import java.util.Enumeration;
-import sun.security.action.GetPropertyAction;
 
 
 public class OsUtils {
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    public static final String LINUX          = "Linux";
-    public static final String windows        = "Windows";
+    public static final String LINUX = "Linux";
+    public static final String windows = "Windows";
 
     public static boolean isWindows() {
-        PrivilegedAction pa = new GetPropertyAction("os.name");
-        String osname = (String) AccessController.doPrivileged(pa);
+        String osname = System.getProperty("os.name");
         return (osname.startsWith(windows));
     }
 
     public static boolean isLinux() {
-        PrivilegedAction pa = new GetPropertyAction("os.name");
-        String osname = (String) AccessController.doPrivileged(pa);
+        String osname = System.getProperty("os.name");
         return ("Linux".equals(osname));
     }
 
     public static boolean isSupportEPoll() {
-        PrivilegedAction pa = new GetPropertyAction("os.name");
-        String osname = (String) AccessController.doPrivileged(pa);
+        String osname = System.getProperty("os.name");
         // use EPollSelectorProvider for Linux kernels >= 2.6
 
         if (LINUX.equals(osname)) {
-            pa = new GetPropertyAction("os.version");
-            String osversion = (String) AccessController.doPrivileged(pa);
+            String osversion = System.getProperty("os.version");
             String[] vers = osversion.split("\\.", 0);
             if (vers.length >= 2) {
                 try {

@@ -1,12 +1,12 @@
 package me.asu.net.socket.client;
 
-import static me.asu.net.NetConstants.ERROR_OPEN;
+import static me.asu.net.socket.NetConstants.ERROR_OPEN;
 
 import java.net.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import me.asu.net.message.IMessage;
-import me.asu.net.util.Stream;
+import me.asu.net.socket.uitl.Stream;
 
 /**
  * AbstractSimpleClient.

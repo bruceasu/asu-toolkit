@@ -117,7 +117,7 @@ public interface MultiValueMap<K, V> {
         return new LinkedMultiValueMap<K, V>();
     }
 
-    public static class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V> {
+    class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V> {
 
         protected Map<K, List<V>> mSource = new LinkedHashMap<K, List<V>>();
 

@@ -1,6 +1,6 @@
-package me.asu.net.util;
+package me.asu.net.socket.uitl;
 
-import static me.asu.net.NetConstants.ERROR_SEND;
+import static me.asu.net.socket.NetConstants.ERROR_SEND;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

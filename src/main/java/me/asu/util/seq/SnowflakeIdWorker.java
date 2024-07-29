@@ -15,20 +15,20 @@ public class SnowflakeIdWorker implements Serializable {
     /**
      * 机器id所占的位数
      */
-    private final long workerIdBits = 5L;
+    private final long workerIdBits = 6L;
 
     /**
      * 数据标识id所占的位数
      */
-    private final long datacenterIdBits = 5L;
+    private final long datacenterIdBits = 4L;
 
     /**
-     * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
+     * 支持的最大机器id，结果是63 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
      */
     private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
 
     /**
-     * 支持的最大数据标识id，结果是31
+     * 支持的最大数据标识id，结果是15
      */
     private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
 
@@ -43,7 +43,7 @@ public class SnowflakeIdWorker implements Serializable {
     private final long workerIdShift = sequenceBits;
 
     /**
-     * 数据标识id向左移17位(12+5)
+     * 数据标识id向左移16位(12+4)
      */
     private final long datacenterIdShift = sequenceBits + workerIdBits;
 
@@ -58,12 +58,12 @@ public class SnowflakeIdWorker implements Serializable {
     private final long sequenceMask = -1L ^ (-1L << sequenceBits);
 
     /**
-     * 工作机器ID(0~31)
+     * 工作机器ID(0~63)
      */
     private long workerId;
 
     /**
-     * 数据中心ID(0~31)
+     * 数据中心ID(0~15)
      */
     private long datacenterId;
 
@@ -82,8 +82,8 @@ public class SnowflakeIdWorker implements Serializable {
     /**
      * 构造函数
      *
-     * @param workerId     工作ID (0~31)
-     * @param datacenterId 数据中心ID (0~31)
+     * @param workerId     工作ID (0~63)
+     * @param datacenterId 数据中心ID (0~15)
      */
     public SnowflakeIdWorker(long workerId, long datacenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
@@ -163,6 +163,18 @@ public class SnowflakeIdWorker implements Serializable {
             timestamp = timeGen();
         }
         return timestamp;
+    }
+
+    public static void main(String[] args) {
+        SnowflakeIdWorker gen = new SnowflakeIdWorker(0,0);
+        for (int i = 0; i < 20; i++) {
+            final long x = gen.nextId();
+            System.out.println(x);
+            System.out.println(Long.toBinaryString(x));
+            System.out.println(Long.toHexString(x));
+            System.out.println(Long.toOctalString(x));
+            System.out.println("--------------------------");
+        }
     }
 
 }

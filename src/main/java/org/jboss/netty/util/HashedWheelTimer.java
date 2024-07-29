@@ -18,21 +18,15 @@
 package org.jboss.netty.util;
 
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import lombok.extern.slf4j.Slf4j;
-import sun.security.action.GetPropertyAction;
 
 /**
  * A {@link Timer} optimized for approximated I/O timeout scheduling.
@@ -507,8 +501,7 @@ public class HashedWheelTimer implements Timer {
     }
 
     public static boolean isWindows() {
-        PrivilegedAction pa = new GetPropertyAction("os.name");
-        String osname = (String) AccessController.doPrivileged(pa);
+        String osname = System.getProperty("os.name");
         return (osname.startsWith("Windows"));
     }
 

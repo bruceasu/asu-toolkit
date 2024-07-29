@@ -24,30 +24,36 @@ public class DateUtils {
     public static final long WEEK = 7 * DAY;
 
 
-    /** Create Date Formats */
+    /**
+     * Create Date Formats
+     */
     private static final String[] POSSIBLE_DATE_FORMATS = {
-                /* RFC 1123 with 2-digit Year */"EEE, dd MMM yy HH:mm:ss z",
-				/* RFC 1123 with 4-digit Year */"EEE, dd MMM yyyy HH:mm:ss z",
-				/* RFC 1123 with no Timezone */"EEE, dd MMM yy HH:mm:ss",
-				/* Variant of RFC 1123 */"EEE, MMM dd yy HH:mm:ss",
-				/* RFC 1123 with no Seconds */"EEE, dd MMM yy HH:mm z",
-				/* Variant of RFC 1123 */"EEE dd MMM yyyy HH:mm:ss",
-				/* RFC 1123 with no Day */"dd MMM yy HH:mm:ss z",
-				/* RFC 1123 with no Day or Seconds */"dd MMM yy HH:mm z",
-				/* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ssZ",
-				/* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss'Z'",
-				/* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:sszzzz",
-				/* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss z",
-				/* ISO 8601 */"yyyy-MM-dd'T'HH:mm:ssz",
-				/* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss.SSSz",
-				/* ISO 8601 slightly modified */"yyyy-MM-dd'T'HHmmss.SSSz",
-				/* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss",
-				/* ISO 8601 w/o seconds */"yyyy-MM-dd'T'HH:mmZ",
-				/* ISO 8601 w/o seconds */"yyyy-MM-dd'T'HH:mm'Z'",
-				/* RFC 1123 without Day Name */"dd MMM yyyy HH:mm:ss z",
-				/* RFC 1123 without Day Name and Seconds */"dd MMM yyyy HH:mm z",
-				/* Simple Date Format */"yyyy-MM-dd",
-                /* Simple Date Format */"MMM dd, yyyy"};
+            "yyyy-MM-dd'T'HH:mm:ss.SSSX", "yyyy-MM-dd'T'HH:mm:ss.SSS",
+            "yyyy-MM-dd'T'HH:mm:ssX", "yyyy-MM-dd'T'HH:mm:ss",
+            "yyyy-MM-dd HH:mm:ss.SSSX", "yyyy-MM-dd HH:mm:ss.SSS",
+            "yyyy-MM-dd HH:mm:ssX", "yyyy-MM-dd HH:mm:ss",
+            /* Simple Date Format */"yyyy-MM-dd",
+            /* Simple Date Format */"MMM dd, yyyy",
+            /* ISO 8601 */"yyyy-MM-dd'T'HH:mm:ssz",
+            /* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ssZ",
+            /* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss'Z'",
+            /* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:sszzzz",
+            /* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss z",
+            /* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss.SSSz",
+            /* ISO 8601 slightly modified */"yyyy-MM-dd'T'HHmmss.SSSz",
+            /* ISO 8601 slightly modified */"yyyy-MM-dd'T'HH:mm:ss",
+            /* ISO 8601 w/o seconds */"yyyy-MM-dd'T'HH:mmZ",
+            /* ISO 8601 w/o seconds */"yyyy-MM-dd'T'HH:mm'Z'",
+            /* RFC 1123 with 2-digit Year */"EEE, dd MMM yy HH:mm:ss z",
+            /* RFC 1123 with 4-digit Year */"EEE, dd MMM yyyy HH:mm:ss z",
+            /* RFC 1123 with no Timezone */"EEE, dd MMM yy HH:mm:ss",
+            /* Variant of RFC 1123 */"EEE, MMM dd yy HH:mm:ss",
+            /* RFC 1123 with no Seconds */"EEE, dd MMM yy HH:mm z",
+            /* Variant of RFC 1123 */"EEE dd MMM yyyy HH:mm:ss",
+            /* RFC 1123 with no Day */"dd MMM yy HH:mm:ss z",
+            /* RFC 1123 with no Day and Seconds */"dd MMM yy HH:mm z",
+            /* RFC 1123 without Day Name */"dd MMM yyyy HH:mm:ss z",
+            /* RFC 1123 without Day Name and Seconds */"dd MMM yyyy HH:mm z",};
 
     /**
      * Tries different date formats to parse against the given string
@@ -68,12 +74,14 @@ public class DateUtils {
         if (strdate.length() > 10) {
 
             /* Open: deal with +4:00 (no zero before hour) */
-            boolean signAtBegin = signPos(strdate, "+") == 0 || signPos(strdate, "-") == 0;
+            boolean signAtBegin = signPos(strdate, "+") == 0
+                    || signPos(strdate, "-") == 0;
             boolean colonAtTwo = signPos(strdate, ":") == 2;
             if (signAtBegin && colonAtTwo) {
-                String sign = strdate.substring(strdate.length() - 5, strdate.length() - 4);
-                strdate = strdate.substring(0, strdate.length() - 5) + sign + "0" + strdate
-                        .substring(strdate.length() - 4);
+                String sign = strdate.substring(
+                        strdate.length() - 5, strdate.length() - 4);
+                strdate = strdate.substring(0, strdate.length() - 5) + sign
+                        + "0" + strdate.substring(strdate.length() - 4);
             }
 
             String dateEnd = strdate.substring(strdate.length() - 6);
@@ -82,25 +90,29 @@ public class DateUtils {
              * try to deal with -05:00 or +02:00 at end of date replace with -0500 or
              * +0200
              */
-            signAtBegin = dateEnd.indexOf("-") == 0 || dateEnd.indexOf("+") == 0;
+            signAtBegin = dateEnd.indexOf("-") == 0
+                    || dateEnd.indexOf("+") == 0;
             boolean colonAtThree = dateEnd.indexOf(":") == 3;
             if (signAtBegin && colonAtThree) {
-                boolean hasGMT = "GMT"
-                        .equals(strdate.substring(strdate.length() - 9, strdate.length() - 6));
+                boolean hasGMT = "GMT".equals(strdate.substring(
+                        strdate.length() - 9, strdate.length() - 6));
                 if (!hasGMT) {
                     String oldDate = strdate;
-                    String newEnd = dateEnd.substring(0, 3) + dateEnd.substring(4);
-                    strdate = oldDate.substring(0, oldDate.length() - 6) + newEnd;
+                    String newEnd = dateEnd.substring(0, 3)
+                            + dateEnd.substring(4);
+                    strdate = oldDate.substring(0, oldDate.length() - 6)
+                            + newEnd;
                 }
             }
         }
 
         /* Try to parse the date */
         SimpleDateFormat[] dfsArr = createSimpleDataFormats(POSSIBLE_DATE_FORMATS);
+
         int i = 0;
+
         while (i < dfsArr.length) {
             try {
-
                 /*
                  * This Block needs to be synchronized, because the parse-Method in
                  * SimpleDateFormat is not Thread-Safe.
@@ -117,14 +129,11 @@ public class DateUtils {
         return result;
     }
 
-    private static int signPos(String strdate, String str)
-    {
+    private static int signPos(String strdate, String str) {
         return strdate.substring(strdate.length() - 5).indexOf(str);
     }
 
-
-    public static SimpleDateFormat[] createSimpleDataFormats(String[] formats)
-    {
+    public static SimpleDateFormat[] createSimpleDataFormats(String[] formats) {
         /* Create the dateformats */
         SimpleDateFormat[] dfsArr = new SimpleDateFormat[formats.length];
 
@@ -135,13 +144,11 @@ public class DateUtils {
         return dfsArr;
     }
 
-    public static Date now()
-    {
+    public static Date now() {
         return new Date();
     }
 
-    public static String now(String fmt)
-    {
+    public static String now(String fmt) {
         if (fmt == null) {
             fmt = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
         }
@@ -150,43 +157,35 @@ public class DateUtils {
         return sdf.format(now());
     }
 
-    public static Date today()
-    {
+    public static Date today() {
         LocalDate now = LocalDate.now();
         return asDate(now);
     }
 
-    public static Date yesterday()
-    {
-        LocalDate now = LocalDate.now();
+    public static Date yesterday() {
+        LocalDate now       = LocalDate.now();
         LocalDate yesterday = now.minusDays(1);
         return asDate(yesterday);
     }
 
-    public static Date tomorrow()
-    {
-        LocalDate now = LocalDate.now();
+    public static Date tomorrow() {
+        LocalDate now      = LocalDate.now();
         LocalDate tomorrow = now.plusDays(1);
         return asDate(tomorrow);
     }
 
     // 本月第一天0:00时刻:
-    public static LocalDateTime firstDayOfMonth()
-    {
-
+    public static LocalDateTime firstDayOfMonth() {
         return LocalDate.now().withDayOfMonth(1).atStartOfDay();
     }
 
     //  本月最后1天:
-    public static LocalDate lastDayOfMonth()
-    {
-
+    public static LocalDate lastDayOfMonth() {
         return LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
     }
 
     // 本月第1个周X
-    public static LocalDate firstWeekday(DayOfWeek wd)
-    {
+    public static LocalDate firstWeekday(DayOfWeek wd) {
         if (wd == null) {
             wd = DayOfWeek.MONDAY;
         }
@@ -194,52 +193,51 @@ public class DateUtils {
     }
 
     // 下月第1天:
-    public static LocalDateTime nextMonthFirstDay()
-    {
-
-        return LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()).atStartOfDay();
+    public static LocalDateTime nextMonthFirstDay() {
+        return LocalDate.now()
+                        .with(TemporalAdjusters.firstDayOfNextMonth())
+                        .atStartOfDay();
     }
 
-
-    public static Date toDate(String iso8061Date)
-    {
+    public static Date toDate(String iso8061Date) {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_DATE_TIME;
 
         OffsetDateTime offsetDateTime = OffsetDateTime.parse(iso8061Date, timeFormatter);
 
         Date date = Date.from(Instant.from(offsetDateTime));
+
         return date;
     }
 
-    public static String toIso8061String(Date date)
-    {
+    public static String toIso8061String(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         return sdf.format(date);
     }
 
-    public static String toIso8061StringJdk8(Date date)
-    {
+    public static String toIso8061StringJdk8(Date date) {
         LocalDateTime localDateTime = asLocalDateTime(date);
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(localDateTime);
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+                                .format(localDateTime);
     }
 
-    public static Date asDate(LocalDate localDate)
-    {
-        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    public static Date asDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay()
+                                  .atZone(ZoneId.systemDefault())
+                                  .toInstant());
     }
 
-    public static Date asDate(LocalDateTime localDateTime)
-    {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    public static Date asDate(LocalDateTime localDateTime) {
+        ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
+        return Date.from(zdt.toInstant());
     }
 
-    public static LocalDate asLocalDate(Date date)
-    {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    public static LocalDate asLocalDate(Date date) {
+        return Instant.ofEpochMilli(date.getTime())
+                      .atZone(ZoneId.systemDefault())
+                      .toLocalDate();
     }
 
-    public static LocalDateTime asLocalDateTime(Date date)
-    {
+    public static LocalDateTime asLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime())
                       .atZone(ZoneId.systemDefault())
                       .toLocalDateTime();

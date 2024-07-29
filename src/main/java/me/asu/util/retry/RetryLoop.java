@@ -1,13 +1,13 @@
 package me.asu.util.retry;
 
-import asu.tool.util.timetrace.DefaultTracerDriver;
-import asu.tool.util.timetrace.TracerDriver;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
+import me.asu.util.timetrace.DefaultTracerDriver;
+import me.asu.util.timetrace.TracerDriver;
 
 /**
  * <p>Mechanism to perform an operation on Job that is safe against

@@ -95,6 +95,7 @@ public class GetOpt {
                     char   opLetter = op.getArgLetter();
                     if (!op.hasArg() && theOptionMatcher.hasArg(opLetter)) {
                         op.setArg(token);
+                        currOptIndex = i + 1;
                     } else {
                         // case 3 -
                         // the last option stored does not take

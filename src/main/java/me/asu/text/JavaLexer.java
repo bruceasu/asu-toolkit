@@ -375,7 +375,7 @@ public class JavaLexer {
         try {
             if (fd == null) {
                 fd = new FileReader(
-                        "src\\main\\java\\me\\asu\\text\\LevenshteinDistance.java");
+                        "src\\main\\java\\me\\asu\\text\\JavaLexer.java");
             }
 
             ch = (char) fd.read();

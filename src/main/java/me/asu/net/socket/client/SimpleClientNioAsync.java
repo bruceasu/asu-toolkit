@@ -1,6 +1,6 @@
 package me.asu.net.socket.client;
 
-import static me.asu.net.NetConstants.ERROR_SEND;
+import static me.asu.net.socket.NetConstants.ERROR_SEND;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import me.asu.net.util.NioStream;
+import me.asu.net.socket.uitl.NioStream;
 import me.asu.net.message.*;
 
 /**

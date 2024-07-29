@@ -1,5 +1,6 @@
 package me.asu.text;
 
+import me.asu.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +143,13 @@ public final class BomUtils {
         baos.write(text);
         return baos.toByteArray();
     }
-
+    public static String appendBOM(String text) {
+        if (Strings.isEmpty(text)) {
+            return "\ufeff";
+        } else {
+            return "\ufeff" + text;
+        }
+    }
     public void appendBOM(Path path , BOM_TYPE type) throws IOException {
         if (!Files.isRegularFile(path)) {
             log.warn("{} is not a regular file.", path);
