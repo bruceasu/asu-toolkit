@@ -73,7 +73,7 @@ public class StructureConvert extends MaplEach implements MaplConvert {
      * @param path 模板文件路径
      */
     public StructureConvert(String path) throws IOException {
-        Object obj = JsonUtils.toJson(Streams.readAndClose(Streams.fileInr(path)));
+        Object obj = JsonUtils.serialize(Streams.readAndClose(Streams.fileInr(path)));
         loadRelation(obj, "");
     }
 
@@ -81,7 +81,7 @@ public class StructureConvert extends MaplEach implements MaplConvert {
      * @param reader 模板流
      */
     public StructureConvert(Reader reader) throws IOException {
-        Object obj = JsonUtils.toJson(Streams.readAndClose(reader));
+        Object obj = JsonUtils.serialize(Streams.readAndClose(reader));
         loadRelation(obj, "");
     }
 

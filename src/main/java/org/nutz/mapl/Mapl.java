@@ -33,11 +33,11 @@ public class Mapl {
      */
     @SuppressWarnings("unchecked")
     public static <T> T mapListToObject(Object maplist, Class<T> clz) {
-        return (T) JsonUtils.toObject(maplist, clz);
+        return (T) JsonUtils.convertToObject(maplist, clz);
     }
 
     public static <T> T mapListToObject(Object maplist, TypeReference<T> clz) {
-        return (T) JsonUtils.toObject(maplist, clz);
+        return (T) JsonUtils.convertToObject(maplist, clz);
     }
 
     // ------------------------------------------------------------------

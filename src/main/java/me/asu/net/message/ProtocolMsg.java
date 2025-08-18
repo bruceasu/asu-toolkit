@@ -4,7 +4,7 @@ package me.asu.net.message;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import me.asu.text.Hex;
+import me.asu.util.Hex;
 import me.asu.util.Bytes;
 
 /**

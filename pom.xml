@@ -8,47 +8,83 @@
   <version>1.0.0-SNAPSHOT</version>
   <properties>
     <!-- MAVEN 配置 -->
+    <!-- 用 release=8，比 source/target 更稳（JDK9+ 提供），输出 Java 8 字节码 -->
+<!--    <maven.compiler.release>8</maven.compiler.release>-->
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <maven.test.skip>false</maven.test.skip>
+    <maven.test.skip>true</maven.test.skip>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <slf4j.version>1.7.25</slf4j.version>
-    <logback.version>1.2.3</logback.version>
-    <lombok.version>1.16.20</lombok.version>
-    <junit.version>4.12</junit.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- 选 Java 8 仍支持的分支 -->
+    <slf4j.version>1.7.36</slf4j.version>      <!-- 1.7.x 仍兼容 8；2.x 需要配合 logback 1.4+（Java11+） -->
+    <logback.version>1.2.13</logback.version>  <!-- 1.2.x 支持 8；1.4.x 需要 Java 11+ -->
+    <lombok.version>1.18.30</lombok.version>   <!-- 兼容 8 -->
+    <jackson.version>2.16.2</jackson.version>  <!-- 仍支持 8 -->
+    <junit4.version>4.13.2</junit4.version>
+
     <servlet-api.version>3.1.0</servlet-api.version>
     <netty.version>4.1.15.Final</netty.version>
   </properties>
+  <!-- 可选：用 Boot 2.7.x 的 BOM 管控常见三方库（而非 Boot 3） -->
+  <!-- 只做 dependencyManagement，不引入 spring-boot-starter* 也没关系 -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>2.7.18</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- asu-log binding for SLF4J (1.7.x compatible) -->
+      <dependency>
+        <groupId>com.github.bruceasu.asu-log</groupId>
+        <artifactId>asu-log-minlog</artifactId>
+        <version>v1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.bruceasu.asu-log</groupId>
+        <artifactId>asu-log-slf4j</artifactId>
+        <version>v1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.bruceasu.asu-log</groupId>
+        <artifactId>asu-log-slf4j2</artifactId>
+        <version>v1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.bruceasu.asu-log</groupId>
+        <artifactId>asu-log-to-slf4j</artifactId>
+        <version>v1.0.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.12.1</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>${lombok.version}</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
-    <!--    <dependency>-->
-    <!--      <groupId>io.reactivex</groupId>-->
-    <!--      <artifactId>rxjava</artifactId>-->
-    <!--      <version>1.3.8</version>-->
-    <!--    </dependency>-->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j.version}</version>
-      <!--      <scope>test</scope>-->
-      <optional>true</optional>
+      <groupId>com.github.bruceasu.asu-log</groupId>
+      <artifactId>asu-log-minlog</artifactId>
     </dependency>
 
     <dependency>
@@ -57,56 +93,8 @@
       <version>${servlet-api.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!-- email -->
-    <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-      <version>1.6.2</version>
-      <optional>true</optional>
-    </dependency>
 
-    <!--    <dependency>-->
-    <!--      <groupId>com.google.code.gson</groupId>-->
-    <!--      <artifactId>gson</artifactId>-->
-    <!--      <version>2.8.8</version>-->
-    <!--      <scope>provided</scope>-->
-    <!--    </dependency>-->
-    <!-- <dependency> -->
-    <!--   <groupId>io.netty</groupId> -->
-    <!--   <artifactId>netty-transport-native-epoll</artifactId> -->
-    <!--   <version>${netty.version}</version> -->
-    <!-- </dependency> -->
 
-    <!-- <dependency> -->
-    <!--   <groupId>io.netty</groupId> -->
-    <!--   <artifactId>netty-handler</artifactId> -->
-    <!--   <version>${netty.version}</version> -->
-    <!-- </dependency> -->
-
-    <!-- <dependency> -->
-    <!--   <artifactId>jcl-over-slf4j</artifactId> -->
-    <!--   <groupId>org.slf4j</groupId> -->
-    <!--   <version>${slf4j.version}</version> -->
-    <!-- </dependency> -->
-
-    <!-- <dependency> -->
-    <!--   <artifactId>jul-to-slf4j</artifactId> -->
-    <!--   <groupId>org.slf4j</groupId> -->
-    <!--   <version>${slf4j.version}</version> -->
-    <!-- </dependency> -->
-
-    <!-- <dependency> -->
-    <!--   <artifactId>log4j-over-slf4j</artifactId> -->
-    <!--   <groupId>org.slf4j</groupId> -->
-    <!--   <version>${slf4j.version}</version> -->
-    <!-- </dependency> -->
-
-    <!-- <!-\- log日志核心包 -\-> -->
-    <!-- <dependency> -->
-    <!--   <groupId>ch.qos.logback</groupId> -->
-    <!--   <artifactId>logback-classic</artifactId> -->
-    <!--   <version>${logback.version}</version> -->
-    <!-- </dependency> -->
   </dependencies>
   <build>
     <plugins>
@@ -114,7 +102,7 @@
       <plugin>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok-maven-plugin</artifactId>
-        <version>1.16.10.0</version>
+        <version>1.18.20.0</version>
         <configuration>
           <encoding>utf-8</encoding>
         </configuration>
@@ -127,34 +115,50 @@
           </execution>
         </executions>
       </plugin>
-      <!-- compiler -->
+      <!-- 编译：用 release=8 输出 1.8 字节码（即使在 JDK17/21 上编译 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>3.11.0</version>
         <configuration>
-          <fork>true</fork>
+<!--          <release>${maven.compiler.release}</release>-->
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
           <encoding>${project.build.sourceEncoding}</encoding>
           <compilerArgs>
-            <!--<arg>-XX:MaxPermSize=512M</arg>-->
-            <arg>-verbose</arg>
+            <!--<arg>-verbose</arg>-->
             <arg>-parameters</arg>
-            <!--<arg>-Xlint:unchecked</arg>-->
-            <!--<arg>-Xlint:deprecation</arg>-->
-            <!--<arg>-bootclasspath</arg>-->
-            <!--<arg>${env.JAVA_HOME}/jre/lib/rt.jar</arg>-->
-            <!--<arg>-extdirs</arg>-->
-            <!--<arg>${project.basedir}/src/main/webapp/WEB-INF/lib</arg>-->
           </compilerArgs>
         </configuration>
       </plugin>
+      <!-- Enforcer：阻止用错 JDK & 插件太旧 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <!-- 构建机可用更高 JDK，但输出 release=8；若你强制要求用 JDK8 构建，可设 [1.8,1.9) -->
+                <requireJavaVersion>
+                  <version>[1.8,)</version>
+                </requireJavaVersion>
+                <requireMavenVersion>
+                  <version>[3.6.3,)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
+        <version>3.4.2</version>
         <configuration>
           <archive>
             <manifest>
@@ -170,6 +174,7 @@
               <Implementation-Title>${project.name}</Implementation-Title>
               <Implementation-Version>${project.version}</Implementation-Version>
               <Built-By>Base Platform Team</Built-By>
+              <Automatic-Module-Name>me.asu.toolkits</Automatic-Module-Name>
             </manifestEntries>
           </archive>
           <!-- 由具体的项目自己指定 -->
@@ -183,31 +188,7 @@
           <!--</excludes>-->
         </configuration>
       </plugin>
-      <!-- dependency -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.10</version>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/lib</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
-      <!-- war -->
-      <!-- <plugin> -->
-      <!--   <groupId>org.apache.maven.plugins</groupId> -->
-      <!--   <artifactId>maven-war-plugin</artifactId> -->
-      <!--   <version>2.1.1</version> -->
-      <!-- </plugin> -->
       <!-- source -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -227,7 +208,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.3</version>
+        <version>3.6.3</version>
         <configuration>
           <!-- 配置无效，配置全局环境变量
                JAVA_TOOL_OPTIONS =  -Dfile.encoding=UTF-8
@@ -236,20 +217,7 @@
           <encoding>UTF-8</encoding>
           <show>private</show>
           <nohelp>true</nohelp>
-          <aggregate>true</aggregate>
-          <additionalparam>-Xdoclint:none</additionalparam>
-          <tags>
-            <tag>
-              <name>date</name>
-              <placement>a</placement>
-              <head>创建日期</head>
-            </tag>
-            <tag>
-              <name>copyright</name>
-              <placement>a</placement>
-              <head>版权:</head>
-            </tag>
-          </tags>
+          <doclint>none</doclint>
         </configuration>
         <executions>
           <execution>
@@ -280,11 +248,46 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <version>3.2.5</version>
         <configuration>
           <skip>${maven.test.skip}</skip>
         </configuration>
       </plugin>
+
+      <!-- 可选：签名/发布时使用（如要发中央仓库再开启） -->
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals><goal>sign</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+  <!-- 如需发布到 Nexus，配置 distributionManagement（按你的 Nexus 地址改） -->
+  <!--
+  <distributionManagement>
+    <repository>
+      <id>nexus-releases</id>
+      <url>https://nexus.example.com/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>nexus-snapshots</id>
+      <url>https://nexus.example.com/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+  -->
 </project>

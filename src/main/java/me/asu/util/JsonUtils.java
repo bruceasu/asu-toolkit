@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static me.asu.util.Strings.isEmpty;
-
 
 /**
  * Created by Administrator on 2020/5/15.
@@ -28,50 +27,29 @@ public class JsonUtils {
 
     static {
         mapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
-    /**
-     * 假设content是json数据, 如果不是json数据则抛IOException异常。
-     */
-    public static JsonNode toJson(String content) throws IOException {
-        if (isEmpty(content)) {
-            return NullNode.getInstance();
-        }
-        return mapper.readTree(content);
-    }
 
-    public static JsonNode toJson(byte[] data) {
+    public static String serialize(Object data) {
         try {
-            return mapper.readTree(data);
-        } catch (IOException e) {
+            return mapper.writeValueAsString(data);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static <T> T toJson(String content, TypeReference<T> type) throws IOException {
-        return mapper.readValue(content, type);
+    public static String serializeForPrint(Object data) {
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(data);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static <T> T toJson(String content, Class<T> clazz) throws IOException {
-        return mapper.readValue(content, clazz);
-    }
-
-
-    public static <T> TypeReference<T> createTypeReference(Class<T> cls) {
-        return new TypeReference<T>() {
-            @Override
-            public Type getType() {
-                return cls;
-            }
-        };
-    }
-
-    public static String stringify(Object data) throws JsonProcessingException {
-        return mapper.writeValueAsString(data);
-    }
-
-    public static byte[] stringifyAsBytes(Object data) {
+    public static byte[] serializeToBytes(Object data) {
         try {
             return mapper.writeValueAsBytes(data);
         } catch (JsonProcessingException e) {
@@ -79,21 +57,60 @@ public class JsonUtils {
         }
     }
 
-    public static String stringifyPretty(Object data) throws JsonProcessingException {
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(data);
+    public static JsonNode deserialize(String data) {
+        if (isEmpty(data)) {
+            return NullNode.getInstance();
+        }
+        try {
+            return mapper.readTree(data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    public static JsonNode deserialize(byte[] data) {
+        if (data == null || data.length == 0) {
+            return NullNode.getInstance();
+        }
+        try {
+            return mapper.readTree(data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-//    // 使用 TypeReference 反序列化含有泛型的对象
-//    public static <T> Response<T> fromJson(String json, Class<T> clazz) throws IOException {
-//        return objectMapper.readValue(json, objectMapper.getTypeFactory().constructParametricType(Response.class, clazz));
-//    }
+    public static <T> T deserialize(String data, TypeReference<T> type) {
+        try {
+            return mapper.readValue(data, type);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-//    // 反序列化泛型集合
-//    public static <T> List<T> listFromJson(String json, Class<T> clazz) throws IOException {
-//        return objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
-//    }
+    public static <T> T deserialize(String data, Class<T> cls) {
+        if (cls == String.class) {
+            return (T) data;
+        } else {
+            try {
+                return mapper.readValue(data, createTypeReference(cls));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
+    // 使用 TypeReference 反序列化含有泛型的对象
+    public static <T, E> T fromJson(String json, Class<T> t, Class<E> e) throws IOException {
+        return mapper.readValue(json, mapper.getTypeFactory().constructParametricType(t, e));
+    }
+
+    public static Map deserializeToMap(byte[] data) {
+        try {
+            return mapper.readValue(data, Map.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * to Map
@@ -101,7 +118,7 @@ public class JsonUtils {
      * @param data json String
      * @return a Map
      */
-    public static Map toMap(String data) {
+    public static Map deserializeToMap(String data) {
         try {
             return mapper.readValue(data, Map.class);
         } catch (IOException e) {
@@ -109,15 +126,8 @@ public class JsonUtils {
         }
     }
 
-    public static Map toMap(byte[] data) {
-        try {
-            return mapper.readValue(data, Map.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static <T> List<T> toList(String data, Class<T> cls) {
+    // 反序列化泛型集合
+    public static <T> List<T> deserializeToList(String data, Class<T> cls) {
         CollectionType listType = mapper.getTypeFactory()
                 .constructCollectionType(ArrayList.class, cls);
         try {
@@ -128,24 +138,28 @@ public class JsonUtils {
 
     }
 
-    public static List<Map> toMapList(String data) {
-        return toList(data, Map.class);
+    public static List<Map<String, Object>> deserializeToList(String data) {
+        try {
+            return mapper.readValue(data, new TypeReference<List<Map<String, Object>>>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static Map toMap(Object object) {
+    public static Map<String, Object> convertToMap(Object object) {
         //用jackson将bean转换为map
-        return mapper.convertValue(object, new TypeReference<Map>() {
+        return mapper.convertValue(object, new TypeReference<Map<String, Object>>() {
         });
     }
 
 
-    public static List<Map> convertToListMap(List<Object> list) {
+    public static List<Map> convertToMapList(List<Object> list) {
         //用jackson将bean转换为List<Map>
         return mapper.convertValue(list, new TypeReference<List<Map>>() {
         });
     }
 
-    public static <T> T toObject(Object data, Class<T> cls) {
+    public static <T> T convertToObject(Object data, Class<T> cls) {
         if (data == null) return null;
         if (data.getClass() == JsonNode.class) {
             return (T) data;
@@ -157,7 +171,8 @@ public class JsonUtils {
             }
         }
     }
-    public static <T> T toObject(Object data,TypeReference<T> cls) {
+
+    public static <T> T convertToObject(Object data, TypeReference<T> cls) {
         if (data == null) return null;
         if (data.getClass() == JsonNode.class) {
             return (T) data;
@@ -167,13 +182,6 @@ public class JsonUtils {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-    public static <T> T stringToObject(String data, TypeReference<T> type) {
-        try {
-            return mapper.readValue(data, type);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -209,6 +217,21 @@ public class JsonUtils {
 
         return dtNode.at(path).asText();
     }
+
+    public static <T> TypeReference<T> createTypeReference(Class<T> cls) {
+        return new TypeReference<T>() {
+            @Override
+            public Type getType() {
+                return cls;
+            }
+        };
+    }
+
+
+    private static boolean isEmpty(String path) {
+        return path == null || path.trim().isEmpty();
+    }
+
 
     public static ObjectNode createObject() {
         return mapper.createObjectNode();

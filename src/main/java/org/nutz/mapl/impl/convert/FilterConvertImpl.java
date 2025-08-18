@@ -29,7 +29,7 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert {
 
     @SuppressWarnings("unchecked")
     public FilterConvertImpl(String path) {
-        items = (List<String>) JsonUtils.toList(Streams.readAndClose(Streams.fileInr(path)), String.class);
+        items = (List<String>) JsonUtils.deserializeToList(Streams.readAndClose(Streams.fileInr(path)), String.class);
     }
 
     public FilterConvertImpl(List<String> paths) {

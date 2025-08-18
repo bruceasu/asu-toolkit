@@ -105,7 +105,7 @@ public class ObjCompileImpl implements MaplCompile<Object> {
         if (null == obj) {
             return null;
         }
-        return JsonUtils.toObject(obj, Map.class);
+        return map2Json(JsonUtils.convertToMap(obj), map);
 
     }
 
