@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+    <mirrors>
+        <!-- 公司私服作为全局镜像
+        <mirror>
+            <id>corp-nexus</id>
+            <name>Corporate Nexus</name>
+            <url>https://nexus.yourcorp.local/repository/maven-public/</url>
+            <mirrorOf>*</mirrorOf>
+        </mirror>
+         -->
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <id>corp</id>
+            <activation>
+                <jdk>17</jdk>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- 这里可以放公司通用属性 -->
+                <maven.compiler.source>8</maven.compiler.source>
+                <maven.compiler.target>8</maven.compiler.target>
+                <maven.compiler.release>8</maven.compiler.release> <!-- Java 9+ 推荐 -->
+            </properties>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo.maven.apache.org/maven2/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
+    <!-- 如需认证 -->
+    <!--
+    <servers>
+      <server>
+        <id>corp-nexus</id>
+        <username>${env:NEXUS_USER}</username>
+        <password>${env:NEXUS_PASS}</password>
+      </server>
+    </servers>
+    -->
+    <servers>
+        <server>
+            <id>internal</id>
+            <username>developer</username>
+            <password>password123</password>
+        </server>
+        <server>
+            <id>snapshots</id>
+            <username>developer</username>
+            <password>password123</password>
+        </server>
+        <server>
+            <id>plugin_internal</id>
+            <username>developer</username>
+            <password>password123</password>
+        </server>
+        <server>
+            <id>plugin_snapshots</id>
+            <username>developer</username>
+            <password>password123</password>
+        </server>
+        <server>
+            <id>development_release</id>
+            <username>developer</username>
+            <password>password123</password>
+        </server>
+        <server>
+            <id>development_snapshots</id>
+            <username>developer</username>
+            <password>password123</password>
+        </server>
+    </servers>
+</settings>

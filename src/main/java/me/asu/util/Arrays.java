@@ -126,9 +126,6 @@ public class Arrays {
                                                   .getComponentType(),
                                               eles.length + 1);
             arr[0] = e;
-            //            for (int i = 0; i < eles.length; i++) {
-            //                arr[i + 1] = eles[i];
-            //            }
             System.arraycopy(eles, 0, arr, 1, eles.length);
             return arr;
         } catch (NegativeArraySizeException e1) {
@@ -151,12 +148,8 @@ public class Arrays {
                 arr[0] = e;
                 return arr;
             }
-            T[] arr = (T[]) Array.newInstance(eles.getClass()
-                                                  .getComponentType(),
-                                              eles.length + 1);
-            //            for (int i = 0; i < eles.length; i++) {
-            //                arr[i] = eles[i];
-            //            }
+            T[] arr = (T[]) Array.newInstance(eles.getClass().getComponentType(),
+                    eles.length + 1);
             System.arraycopy(eles, 0, arr, 0, eles.length);
             arr[eles.length] = e;
             return arr;
